@@ -1,0 +1,22 @@
+<launch>
+  <!-- Flag indicating whether MoveIt! is allowed to load/unload  or switch controllers -->
+  <arg name="moveit_manage_controllers" default="true"/>
+  <param name="moveit_manage_controllers" value="$(arg moveit_manage_controllers)"/>
+
+  <!-- When determining the expected duration of a trajectory, this multiplicative factor is applied to get the allowed duration of execution -->
+  <param name="trajectory_execution/allowed_execution_duration_scaling" value="1.2"/>
+  <!-- default 1.2 -->
+  <!-- Allow more than the expected execution time before triggering a trajectory cancel (applied after scaling) -->
+  <param name="trajectory_execution/allowed_goal_duration_margin" value="0.5"/>
+  <!-- default 0.5 -->
+  <!-- Allowed joint-value tolerance for validation that trajectory's first point matches current robot state -->
+  <param name="trajectory_execution/allowed_start_tolerance" value="0.01"/>
+  <!-- default 0.01 -->
+
+  <!-- Load Fake controller -->
+  <!-- Set the param that trajectory_execution_manager needs to find the controller plugin -->
+  <param name="moveit_controller_manager" value="moveit_fake_controller_manager/MoveItFakeControllerManager"/>
+
+  <!-- The rest of the params are specific to this plugin -->
+  <rosparam file="$(find braccio_driver)/config/fake_controllers.yaml"/>
+</launch>

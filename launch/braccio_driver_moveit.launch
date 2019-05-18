@@ -1,0 +1,44 @@
+<launch>
+  <!-- Launch the Move it pipeline and connect to the robot arm using rosserial -->
+
+  <arg name="capability_group" default="braccio_arm"/>
+  <arg name="use_joint_state_gui" default="false"/>
+
+  <!-- Load the URDF, SRDF and .yaml configuration files -->
+  <include file="$(find braccio_driver)/launch/planning_context.launch">
+    <arg name="load_robot_description" value="true"/>
+  </include>
+
+  <!-- Use fake joint states because arm does not provide feedback -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="kill_on_stop" value="300"/>
+    <param name="rate" value="2"/>
+    <param name="use_gui" value="$(arg use_joint_state_gui)"/>
+    <rosparam param="source_list">[/move_group/fake_controller_joint_states]</rosparam>
+  </node>
+
+  <!-- Broadcast static tf for robot root -->
+  <node pkg="tf" type="static_transform_publisher" name="tf_odom_base_link" args="0 0 0 0 0 0 odom base_link 100">
+    <param name="capability_group" value="$(arg capability_group)"/>
+  </node>
+
+  <!-- Publish tf for the robot links -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+    <param name="capability_group" value="$(arg capability_group)"/>
+  </node>
+
+  <!--Execute move_it -->
+  <include file="$(find braccio_driver)/launch/move_group.launch">
+    <arg name="capability_group" value="$(arg capability_group)"/>
+    <arg name="allow_trajectory_execution" value="true"/>
+  </include>
+
+  <!-- Start ROS communication between the arm and PC -->
+  <node pkg="rosserial_python" name="rosserial_braccio" type="serial_node.py" output="screen">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="port" value="/dev/ttyACM0" />
+    <param name="baud" value="115200" />
+  </node>
+
+</launch>
