@@ -8,15 +8,15 @@
   <arg name="publish_monitored_planning_scene" default="true"/>
 
   <!-- Planning Functionality -->
-  <include ns="move_group" file="$(find braccio_driver)/launch/ompl_planning_pipeline.launch" />
+  <include ns="move_group" file="$(find braccio_driver)/launch/moveit/ompl_planning_pipeline.launch" />
 
   <!-- Trajectory Execution Functionality -->
-  <include if="$(arg allow_trajectory_execution)" ns="move_group" file="$(find braccio_driver)/launch/trajectory_execution.launch">
+  <include if="$(arg allow_trajectory_execution)" ns="move_group" file="$(find braccio_driver)/launch/moveit/trajectory_execution.launch">
     <arg name="moveit_manage_controllers" value="true" />
   </include>
 
   <!-- Start the actual move_group node/action server -->
-  <node name="move_group" pkg="moveit_ros_move_group" type="move_group" output="screen">
+  <node name="move_group" pkg="moveit_ros_move_group" type="move_group" output="screen" clear_params="true">
     <param name="capability_group" value="$(arg capability_group)"/>
     <!-- Set the display variable, in case OpenGL code is used internally -->
     <env name="DISPLAY" value="$(optenv DISPLAY :0)" />
