@@ -5,7 +5,6 @@ import time
 
 # numpy and scipy
 import numpy as np
-from scipy.ndimage import filters
 from edgetpu.detection.engine import DetectionEngine
 from imutils.video import VideoStream
 from PIL import Image
@@ -17,7 +16,7 @@ import cv2
 # Ros
 import rospy
 from sensor_msgs.msg import CompressedImage
-
+import rospkg
 
 class FaceDetectorEdgeTPU:
 
@@ -28,6 +27,11 @@ class FaceDetectorEdgeTPU:
         self.model_path = rospy.get_param('~model_path', "model.tflite")
         self.threshold = rospy.get_param('~threshold', 0.8)
 
+        if "pkg://" in self.model_path:
+            rp = rospkg.RosPack()
+            path = rp.get_path('braccio_driver')
+            self.model_path = self.model_path.replace("pkg://braccio_driver", path)
+
         # print input parameters
         rospy.loginfo("input_image_compressed: " + self.input_image_compressed)
         rospy.loginfo("output_image_compressed: " + self.output_image_compressed)
@@ -35,8 +39,8 @@ class FaceDetectorEdgeTPU:
         rospy.loginfo("threshold: " + str(self.threshold))
 
         self.model = DetectionEngine(self.model_path)
-        self.pub_image = rospy.Publisher(self.output_image_compressed, CompressedImage, queue_size=5)
-        self.subscriber = rospy.Subscriber(self.input_image_compressed,  CompressedImage, self.callback, queue_size=5)
+        self.pub_image = rospy.Publisher(self.output_image_compressed, CompressedImage, queue_size=1)
+        self.subscriber = rospy.Subscriber(self.input_image_compressed,  CompressedImage, self.callback, queue_size=1)
 
         rospy.spin()
 
