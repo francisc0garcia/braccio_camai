@@ -1,0 +1,63 @@
+<launch>
+  <!-- Launch the Move it pipeline and connect to the robot arm using rosserial -->
+
+  <arg name="capability_group" default="braccio_arm"/>
+  <arg name="use_joint_state_gui" default="false"/>
+  <arg name="cam_device" default="/dev/video0"/>
+
+  <!-- Load the URDF, SRDF and .yaml configuration files -->
+  <include file="$(find braccio_driver)/launch/moveit/planning_context.launch">
+    <arg name="load_robot_description" value="true"/>
+  </include>
+
+  <!-- Use fake joint states because arm does not provide feedback -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" clear_params="true">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="kill_on_stop" value="300"/>
+    <param name="rate" value="2"/>
+    <param name="use_gui" value="$(arg use_joint_state_gui)"/>
+    <rosparam param="source_list">[/move_group/fake_controller_joint_states]</rosparam>
+  </node>
+
+  <!-- Broadcast static tf for robot root -->
+  <node pkg="tf" type="static_transform_publisher" name="tf_odom_base_link" args="0 0 0 0 0 0 odom base_link 100">
+    <param name="capability_group" value="$(arg capability_group)"/>
+  </node>
+
+  <!-- Publish tf for the robot links -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen">
+    <param name="capability_group" value="$(arg capability_group)"/>
+  </node>
+
+  <!--Execute move_it -->
+  <include file="$(find braccio_driver)/launch/moveit/move_group.launch">
+    <arg name="capability_group" value="$(arg capability_group)"/>
+    <arg name="allow_trajectory_execution" value="true"/>
+  </include>
+
+  <!-- Start ROS communication between the arm and PC -->
+  <node pkg="rosserial_python" name="rosserial_braccio" type="serial_node.py" output="screen" clear_params="true">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="port" value="/dev/ttyACM0" />
+    <param name="baud" value="115200" />
+  </node>
+
+  <!-- face detection module -->
+  <node name="face_detection" pkg="braccio_driver" type="face_detection_edge_tpu.py">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="model_path" value="$(find braccio_driver)/tensorflow_models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite"/>
+    <param name="threshold" value="0.8"/>
+  </node>
+
+  <!-- USB web cam driver -->
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="video_device" value="$(arg cam_device)" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+  </node>
+
+</launch>

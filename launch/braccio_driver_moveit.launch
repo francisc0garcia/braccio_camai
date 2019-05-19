@@ -5,12 +5,12 @@
   <arg name="use_joint_state_gui" default="false"/>
 
   <!-- Load the URDF, SRDF and .yaml configuration files -->
-  <include file="$(find braccio_driver)/launch/planning_context.launch">
+  <include file="$(find braccio_driver)/launch/moveit/planning_context.launch">
     <arg name="load_robot_description" value="true"/>
   </include>
 
   <!-- Use fake joint states because arm does not provide feedback -->
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" clear_params="true">
     <param name="capability_group" value="$(arg capability_group)"/>
     <param name="kill_on_stop" value="300"/>
     <param name="rate" value="2"/>
@@ -29,13 +29,13 @@
   </node>
 
   <!--Execute move_it -->
-  <include file="$(find braccio_driver)/launch/move_group.launch">
+  <include file="$(find braccio_driver)/launch/moveit/move_group.launch">
     <arg name="capability_group" value="$(arg capability_group)"/>
     <arg name="allow_trajectory_execution" value="true"/>
   </include>
 
   <!-- Start ROS communication between the arm and PC -->
-  <node pkg="rosserial_python" name="rosserial_braccio" type="serial_node.py" output="screen">
+  <node pkg="rosserial_python" name="rosserial_braccio" type="serial_node.py" output="screen" clear_params="true">
     <param name="capability_group" value="$(arg capability_group)"/>
     <param name="port" value="/dev/ttyACM0" />
     <param name="baud" value="115200" />
