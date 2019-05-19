@@ -53,6 +53,7 @@
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
     <param name="capability_group" value="$(arg capability_group)"/>
     <param name="video_device" value="$(arg cam_device)" />
+    <param name="framerate" value="15" />
     <param name="image_width" value="640" />
     <param name="image_height" value="480" />
     <param name="pixel_format" value="yuyv" />
