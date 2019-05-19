@@ -14,6 +14,12 @@ First install ROS (tested on Kinetic and Melodic), and additional dependencies:
 
 ```sudo apt install ros-$ROS_DISTRO-robot-state-publisher ros-$ROS_DISTRO-joint-state-publisher ros-$ROS_DISTRO-moveit-ros-move-group ros-$ROS_DISTRO-moveit-fake-controller-manager ros-$ROS_DISTRO-moveit-planners ros-$ROS_DISTRO-moveit-planners-ompl ros-$ROS_DISTRO-moveit-ros-planning```
 
+Additional (optional) dependencies:
+
+```sudo apt install python3-opencv python3-pip python3-yaml```
+
+```sudo pip3 install rospkg catkin_pkg```
+
 ## 1. Get and install the project
 
 Clone the project into yout ROS workspace:
