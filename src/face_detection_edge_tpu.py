@@ -17,6 +17,8 @@ import cv2
 import rospy
 from sensor_msgs.msg import CompressedImage
 import rospkg
+from std_msgs.msg import Int16MultiArray
+
 
 class FaceDetectorEdgeTPU:
 
@@ -40,6 +42,7 @@ class FaceDetectorEdgeTPU:
 
         self.model = DetectionEngine(self.model_path)
         self.pub_image = rospy.Publisher(self.output_image_compressed, CompressedImage, queue_size=1)
+        self.pub_box = rospy.Publisher("bounding_box", Int16MultiArray, queue_size=1)
         self.subscriber = rospy.Subscriber(self.input_image_compressed,  CompressedImage, self.callback, queue_size=1)
 
         rospy.spin()
@@ -60,6 +63,11 @@ class FaceDetectorEdgeTPU:
             # extract the bounding box and box and predicted class label
             box = r.bounding_box.flatten().astype("int")
             (startX, startY, endX, endY) = box
+
+            # publish bounding box
+            box_msg = Int16MultiArray()
+            box_msg.data = box
+            self.pub_box.publish(box_msg)
 
             # draw the bounding box and label on the image
             cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
