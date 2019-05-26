@@ -42,8 +42,10 @@ class FaceDetectorEdgeTPU:
         rospy.loginfo("threshold: " + str(self.threshold))
 
         self.model = DetectionEngine(self.model_path)
+
         self.pub_image = rospy.Publisher(self.output_image_compressed, CompressedImage, queue_size=1)
         self.pub_box = rospy.Publisher("bounding_box", Int16MultiArray, queue_size=1)
+
         self.subscriber = rospy.Subscriber(self.input_image_compressed,  CompressedImage, self.callback, queue_size=1)
 
         rospy.spin()
@@ -54,7 +56,6 @@ class FaceDetectorEdgeTPU:
 
         np_arr = np.fromstring(ros_data.data, np.uint8)
         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
         orig = frame.copy()
         frame = Image.fromarray(frame)
 
@@ -74,6 +75,10 @@ class FaceDetectorEdgeTPU:
 
             # draw the bounding box and label on the image
             cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
+
+        # skip if no subscribers are registered
+        if self.pub_image.get_num_connections() == 0:
+            return
 
         #### Create CompressedIamge ####
         msg = CompressedImage()
