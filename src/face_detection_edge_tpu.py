@@ -29,6 +29,7 @@ class FaceDetectorEdgeTPU:
         self.model_path = rospy.get_param('~model_path', "model.tflite")
         self.threshold = rospy.get_param('~threshold', 0.8)
 
+        # fix path if required
         if "pkg://" in self.model_path:
             rp = rospkg.RosPack()
             path = rp.get_path('braccio_driver')
@@ -48,6 +49,9 @@ class FaceDetectorEdgeTPU:
         rospy.spin()
 
     def callback(self, ros_data):
+        if self.pub_box.get_num_connections() == 0 and self.pub_image.get_num_connections() == 0:
+            return
+
         np_arr = np.fromstring(ros_data.data, np.uint8)
         frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
@@ -55,14 +59,13 @@ class FaceDetectorEdgeTPU:
         frame = Image.fromarray(frame)
 
         # make predictions on the input frame
-        results = self.model.DetectWithImage(
-            frame, threshold=self.threshold, keep_aspect_ratio=True, relative_coord=False)
+        results = self.model.DetectWithImage(frame, threshold=self.threshold, keep_aspect_ratio=True, relative_coord=False)
 
         # loop over the results
         for r in results:
-            # extract the bounding box and box and predicted class label
+            # extract the bounding box
             box = r.bounding_box.flatten().astype("int")
-            (startX, startY, endX, endY) = box
+            (r.label_id, startX, startY, endX, endY) = box
 
             # publish bounding box
             box_msg = Int16MultiArray()
