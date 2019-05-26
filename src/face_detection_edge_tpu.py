@@ -65,11 +65,11 @@ class FaceDetectorEdgeTPU:
         for r in results:
             # extract the bounding box
             box = r.bounding_box.flatten().astype("int")
-            (r.label_id, startX, startY, endX, endY) = box
+            (startX, startY, endX, endY) = box
 
             # publish bounding box
             box_msg = Int16MultiArray()
-            box_msg.data = box
+            box_msg.data = [r.label_id, startX, startY, endX, endY]
             self.pub_box.publish(box_msg)
 
             # draw the bounding box and label on the image
