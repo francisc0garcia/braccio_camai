@@ -3,7 +3,7 @@
 
   <arg name="capability_group" default="braccio_arm"/>
   <arg name="use_joint_state_gui" default="false"/>
-  <arg name="use_usb_camera" default="false"/>
+  <arg name="use_usb_camera" default="true"/>
   <arg name="cam_device" default="/dev/video0"/>
 
   <!-- Load the URDF, SRDF and .yaml configuration files -->
@@ -48,7 +48,8 @@
     <param name="capability_group" value="$(arg capability_group)"/>
     <param name="input_image_compressed" value="/pi3a/image/compressed" />
     <param name="model_path" value="$(find braccio_driver)/tensorflow_models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite"/>
-    <param name="threshold" value="0.8"/>
+    <param name="threshold" value="0.3"/>
+    <param name="rotation_angle" value="-90.0"/>
   </node>
 
   <!-- USB web cam driver -->

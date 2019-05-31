@@ -28,6 +28,7 @@ class FaceDetectorEdgeTPU:
         self.output_image_compressed = rospy.get_param('~output_image', "face_image/compressed")
         self.model_path = rospy.get_param('~model_path', "model.tflite")
         self.threshold = rospy.get_param('~threshold', 0.8)
+        self.rotation_angle = rospy.get_param('~rotation_angle', 0.0)
 
         # fix path if required
         if "pkg://" in self.model_path:
@@ -40,20 +41,36 @@ class FaceDetectorEdgeTPU:
         rospy.loginfo("output_image_compressed: " + self.output_image_compressed)
         rospy.loginfo("model_path: " + self.model_path)
         rospy.loginfo("threshold: " + str(self.threshold))
+        rospy.loginfo("rotation_angle: " + str(self.rotation_angle))
 
+        self.current_image = CompressedImage()
+    
+        rospy.loginfo("Loading Tensorflow model")
         self.model = DetectionEngine(self.model_path)
         self.pub_image = rospy.Publisher(self.output_image_compressed, CompressedImage, queue_size=1)
         self.pub_box = rospy.Publisher("bounding_box", Int16MultiArray, queue_size=1)
         self.subscriber = rospy.Subscriber(self.input_image_compressed,  CompressedImage, self.callback, queue_size=1)
 
-        rospy.spin()
+        rospy.loginfo("Face detection started")
 
-    def callback(self, ros_data):
+        while not rospy.is_shutdown():
+            self.process_current_image()
+
+        #rospy.spin()
+
+    def process_current_image(self):
+        # No image data received
+        if len(self.current_image.data) == 0:
+            return
+
+        # skip is no subscribers request for detections
         if self.pub_box.get_num_connections() == 0 and self.pub_image.get_num_connections() == 0:
             return
 
-        np_arr = np.fromstring(ros_data.data, np.uint8)
-        frame = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+        np_arr = np.fromstring(self.current_image.data, np.uint8)
+        frame_ori = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        frame = self.rotate_image(frame_ori, self.rotation_angle)
 
         orig = frame.copy()
         frame = Image.fromarray(frame)
@@ -83,6 +100,15 @@ class FaceDetectorEdgeTPU:
 
         # Publish image with face detections
         self.pub_image.publish(msg)
+
+    def callback(self, ros_data):
+        self.current_image = ros_data
+
+    def rotate_image(self, image, angle):
+        image_center = tuple(np.array(image.shape[1::-1]) / 2)
+        rot_mat = cv2.getRotationMatrix2D(image_center, angle, 1.0)
+        result = cv2.warpAffine(image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR)
+        return result
 
 
 def main(args):
