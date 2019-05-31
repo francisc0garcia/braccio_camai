@@ -18,6 +18,7 @@
   <!-- Start the actual move_group node/action server -->
   <node name="move_group" pkg="moveit_ros_move_group" type="move_group" output="screen" clear_params="true">
     <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="kill_on_stop" value="200" />
     <!-- Set the display variable, in case OpenGL code is used internally -->
     <env name="DISPLAY" value="$(optenv DISPLAY :0)" />
 
