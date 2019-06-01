@@ -83,14 +83,14 @@
     <joint name="shoulder_joint" type="revolute">
         <axis xyz="1 0 0" />
         <limit effort="1000.0" lower="0.2618" upper="2.8798" velocity="1.0" />
-        <origin rpy="-1.0 0 0" xyz="0 -0.002 0.072" />
+        <origin rpy="-1.5708 0 0" xyz="0 -0.002 0.072" />
         <parent link="braccio_base_link" />
         <child link="shoulder_link" />
     </joint>
     <joint name="elbow_joint" type="revolute">
         <axis xyz="1 0 0" />
         <limit effort="1000.0" lower="0" upper="3.1416" velocity="1.0" />
-        <origin rpy="-0.5 0 0" xyz="0 0 0.125" />
+        <origin rpy="-1.5708 0 0" xyz="0 0 0.125" />
         <parent link="shoulder_link" />
         <child link="elbow_link" />
     </joint>
