@@ -29,12 +29,35 @@ class FaceDetectorEdgeTPU:
         self.model_path = rospy.get_param('~model_path', "model.tflite")
         self.threshold = rospy.get_param('~threshold', 0.8)
         self.rotation_angle = rospy.get_param('~rotation_angle', 0.0)
+        self.labels_file = rospy.get_param('~labels_file', "")
+        self.tracked_object = rospy.get_param('~tracked_object', "person")
+        self.enable_labeling = False
+
+        self.labels = {}
 
         # fix path if required
-        if "pkg://" in self.model_path:
-            rp = rospkg.RosPack()
-            path = rp.get_path('braccio_driver')
-            self.model_path = self.model_path.replace("pkg://braccio_driver", path)
+        if len(self.model_path) > 0:
+            if "pkg://" in self.model_path:
+                rp = rospkg.RosPack()
+                path = rp.get_path('braccio_driver')
+                self.model_path = self.model_path.replace("pkg://braccio_driver", path)
+        else:
+            rospy.loginfo("Invalid model path")
+            return
+
+        if len(self.labels_file) > 0:
+            if "pkg://" in self.labels_file:
+                rp = rospkg.RosPack()
+                path = rp.get_path('braccio_driver')
+                self.labels_file = self.labels_file.replace("pkg://braccio_driver", path)
+
+            # loop over the class labels file
+            for row in open(self.labels_file):
+                # unpack the row and update the labels dictionary
+                (classID, label) = row.strip().split(maxsplit=1)
+                self.labels[int(classID)] = label.strip()
+                
+            self.enable_labeling = True
 
         # print input parameters
         rospy.loginfo("input_image_compressed: " + self.input_image_compressed)
@@ -42,6 +65,8 @@ class FaceDetectorEdgeTPU:
         rospy.loginfo("model_path: " + self.model_path)
         rospy.loginfo("threshold: " + str(self.threshold))
         rospy.loginfo("rotation_angle: " + str(self.rotation_angle))
+        rospy.loginfo("labels_file: " + str(self.labels_file))
+        rospy.loginfo("tracked_object: " + str(self.tracked_object))
 
         self.current_image = CompressedImage()
     
@@ -53,7 +78,7 @@ class FaceDetectorEdgeTPU:
 
         self.subscriber = rospy.Subscriber(self.input_image_compressed,  CompressedImage, self.callback, queue_size=1)
 
-        rospy.loginfo("Face detection started")
+        rospy.loginfo("detection started")
 
         while not rospy.is_shutdown():
             self.process_current_image()
@@ -85,14 +110,22 @@ class FaceDetectorEdgeTPU:
             # extract the bounding box
             box = r.bounding_box.flatten().astype("int")
             (startX, startY, endX, endY) = box
-
-            # publish bounding box
-            box_msg = Int16MultiArray()
-            box_msg.data = [r.label_id, startX, startY, endX, endY]
-            self.pub_box.publish(box_msg)
+            
+            if self.enable_labeling:
+                label = self.labels[r.label_id]
+                if label != self.tracked_object:
+                    continue # skip current object
+                y = startY - 15 if startY - 15 > 15 else startY + 15
+                text = "{}: {:.2f}%".format(label, r.score * 100)
+                cv2.putText(orig, text, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
             # draw the bounding box and label on the image
             cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
+
+            box_msg = Int16MultiArray()
+            box_msg.data = [r.label_id, startX, startY, endX, endY]
+            self.pub_box.publish(box_msg)
+            break
 
         # skip if no subscribers are registered
         if self.pub_image.get_num_connections() == 0:

@@ -1,0 +1,62 @@
+<launch>
+  <!-- Launch the Move it pipeline and connect to the robot arm using rosserial -->
+  <arg name="capability_group" default="braccio_arm"/>
+  <arg name="use_joint_state_gui" default="false"/>
+  <arg name="use_usb_camera" default="true"/>
+  <arg name="cam_device" default="/dev/video0"/>
+
+  <!-- Broadcast static tf for robot root -->
+  <node pkg="tf" type="static_transform_publisher" name="tf_odom_base_link" args="0 0 0 0 0 0 odom base_link 100">
+    <param name="capability_group" value="$(arg capability_group)"/>
+  </node>
+
+  <!-- Publish tf for the robot links -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" clear_params="true">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <remap from="joint_states" to="current_state" />
+  </node>
+
+  <!-- Start ROS communication between the arm and PC -->
+  <node pkg="rosserial_python" name="rosserial_braccio" type="serial_node.py" output="screen" clear_params="true">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="port" value="/dev/ttyACM0" />
+    <param name="baud" value="115200" />
+  </node>
+
+  <!-- face detection module -->
+  <node name="face_detection" pkg="braccio_driver" type="face_detection_edge_tpu.py" clear_params="true">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="input_image_compressed" value="/pi3a/image/compressed" />
+    <param name="model_path" value="$(find braccio_driver)/tensorflow_models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
+    <param name="labels_file" value="$(find braccio_driver)/tensorflow_models/coco_labels.txt"/>
+    <param name="tracked_object" value="bottle"/>
+    <param name="threshold" value="0.3"/>
+    <param name="rotation_angle" value="-90.0"/>
+  </node>
+
+  <!-- USB web cam driver -->
+  <node if="$(arg use_usb_camera)" name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" clear_params="true">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="video_device" value="$(arg cam_device)" />
+    <param name="framerate" value="15" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <remap from="/usb_cam/image_raw/compressed" to="/pi3a/image/compressed" />
+    <remap from="/usb_cam/camera_info" to="/pi3a/camera_info" />
+  </node>
+
+  <!-- Joint interface -->
+  <node name="DirectJointInterfaceAsus" pkg="braccio_driver" type="DirectJointInterface" clear_params="true">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="kill_on_stop" value="100" />
+    <param name="camera_radius" value="5" />
+    <param name="goal_tolerance" value="0.05" />
+    <param name="p_gain_yaw" value="0.0005" />
+    <param name="p_gain_pitch" value="0.0005" />
+    <rosparam param="initial_pose">[2.0, 2.2, 0.7, 0.5, 1.7, 1.27]</rosparam>
+  </node>
+
+</launch>
