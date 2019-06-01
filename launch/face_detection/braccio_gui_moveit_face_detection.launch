@@ -2,7 +2,7 @@
   <arg name="capability_group" default="GUI"/>
 
   <!-- Launch RVIZ-based GUI -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find braccio_driver)/config/face_detection.rviz">
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find braccio_driver)/config/moveit_face_detection.rviz">
     <param name="capability_group" value="$(arg capability_group)"/>
   </node>
 

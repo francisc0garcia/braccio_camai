@@ -27,6 +27,9 @@ include_directories(
 add_executable(MoveitJointInterface src/MoveitJointInterface.cpp)
 target_link_libraries(MoveitJointInterface ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
+add_executable(DirectJointInterface src/DirectJointInterface.cpp)
+target_link_libraries(DirectJointInterface ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+
 #############
 ## Install ##
 #############
@@ -40,7 +43,10 @@ catkin_install_python(
   PROGRAMS src/face_detection_edge_tpu.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-install(TARGETS MoveitJointInterface DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+install(TARGETS 
+  MoveitJointInterface 
+  DirectJointInterface
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 #############
 ## Testing ##

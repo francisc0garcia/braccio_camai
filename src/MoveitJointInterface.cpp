@@ -49,7 +49,7 @@ public:
         private_node.param<double>("planning_time", planning_time, 2.0);
         private_node.param<double>("p_gain_yaw", p_gain_yaw, 0.001);
         private_node.param<double>("p_gain_pitch", p_gain_pitch, 0.001);
-        private_node.param< std::vector<double> >("initial_pose", initial_pose, std::vector<double>());
+        private_node.param<std::vector<double>>("initial_pose", initial_pose, std::vector<double>());
 
         ROS_INFO_STREAM("planning_group: " << planning_group);
         ROS_INFO_STREAM("camera_width: " << camera_width);
@@ -70,7 +70,7 @@ public:
         center_y = camera_height / 2.0;
 
         // fix initial pose if defined
-        if(initial_pose.size() > 0)
+        if (initial_pose.size() > 0)
         {
             move_group->setJointValueTarget(initial_pose);
             move_group->move();
@@ -241,7 +241,7 @@ public:
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "move_group_interface_tutorial");
+    ros::init(argc, argv, "MoveitJointInterface");
     ros::NodeHandle node_handle;
     ros::AsyncSpinner spinner(1);
     spinner.start();
