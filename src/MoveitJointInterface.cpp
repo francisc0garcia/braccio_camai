@@ -32,6 +32,7 @@ public:
     double p_gain_yaw, p_gain_pitch;
 
     double lim_x_up, lim_x_down, lim_y_up, lim_y_down, lim_z_up, lim_z_down;
+    std::vector<double> initial_pose;
 
 public:
     MoveitJointInterface()
@@ -48,6 +49,7 @@ public:
         private_node.param<double>("planning_time", planning_time, 2.0);
         private_node.param<double>("p_gain_yaw", p_gain_yaw, 0.001);
         private_node.param<double>("p_gain_pitch", p_gain_pitch, 0.001);
+        private_node.param< std::vector<double> >("initial_pose", initial_pose, std::vector<double>());
 
         ROS_INFO_STREAM("planning_group: " << planning_group);
         ROS_INFO_STREAM("camera_width: " << camera_width);
@@ -66,6 +68,14 @@ public:
 
         center_x = camera_width / 2.0;
         center_y = camera_height / 2.0;
+
+        // fix initial pose if defined
+        if(initial_pose.size() > 0)
+        {
+            move_group->setJointValueTarget(initial_pose);
+            move_group->move();
+            ROS_INFO_STREAM("Initial position reached!");
+        }
 
         ros::Subscriber sub_box = n.subscribe("bounding_box", 1, &MoveitJointInterface::callbackBoundingBox, this);
 
@@ -116,6 +126,10 @@ public:
         // get current joint angles
         std::vector<double> group_variable_values;
         move_group->getCurrentState()->copyJointGroupPositions(move_group->getCurrentState()->getRobotModel()->getJointModelGroup(move_group->getName()), group_variable_values);
+
+        //ROS_INFO_STREAM("joints");
+        //for(double j: group_variable_values)
+        //    ROS_INFO_STREAM(j);
 
         int index_joint_x = 0;
         int index_joint_y = 3;

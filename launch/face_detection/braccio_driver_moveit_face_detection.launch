@@ -75,6 +75,7 @@
     <param name="planning_time" value="1.0" />
     <param name="p_gain_yaw" value="0.001" />
     <param name="p_gain_pitch" value="0.001" />
+    <rosparam param="initial_pose">[2.0, 2.2, 0.7, 0.5, 1.7]</rosparam>
   </node>
 
 </launch>
