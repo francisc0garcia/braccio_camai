@@ -66,4 +66,15 @@
     <remap from="/usb_cam/camera_info" to="/pi3a/camera_info" />
   </node>
 
+  <!-- moveit interface -->
+  <node name="MoveitJointInterface" pkg="braccio_driver" type="MoveitJointInterface" clear_params="true">
+    <param name="capability_group" value="$(arg capability_group)"/>
+    <param name="kill_on_stop" value="100" />
+    <param name="camera_radius" value="10" />
+    <param name="goal_tolerance" value="0.05" />
+    <param name="planning_time" value="1.0" />
+    <param name="p_gain_yaw" value="0.001" />
+    <param name="p_gain_pitch" value="0.001" />
+  </node>
+
 </launch>

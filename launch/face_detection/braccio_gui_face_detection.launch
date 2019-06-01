@@ -6,4 +6,9 @@
     <param name="capability_group" value="$(arg capability_group)"/>
   </node>
 
+  <!-- Load the URDF, SRDF and .yaml configuration files -->
+  <include file="$(find braccio_driver)/launch/moveit/planning_context.launch">
+    <arg name="load_robot_description" value="true"/>
+  </include>
+
 </launch>

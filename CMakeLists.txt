@@ -5,13 +5,15 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
 )
 
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES braccio_driver
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  CATKIN_DEPENDS
+    moveit_core
+    moveit_ros_planning_interface
 )
 
 ###########
@@ -19,9 +21,11 @@ catkin_package(
 ###########
 
 include_directories(
-# include
   ${catkin_INCLUDE_DIRS}
 )
+
+add_executable(MoveitJointInterface src/MoveitJointInterface.cpp)
+target_link_libraries(MoveitJointInterface ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 
 #############
 ## Install ##
@@ -35,6 +39,8 @@ install(
 catkin_install_python(
   PROGRAMS src/face_detection_edge_tpu.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+install(TARGETS MoveitJointInterface DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 #############
 ## Testing ##
