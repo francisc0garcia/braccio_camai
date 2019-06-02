@@ -1,6 +1,6 @@
 <launch>
   <!-- Launch RVIZ-based GUI -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find braccio_driver)/config/moveit.rviz">
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find braccio_camai)/config/moveit.rviz">
     <param name="capability_group" value="RVIZ"/>
   </node>
 </launch>

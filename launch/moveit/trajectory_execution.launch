@@ -18,5 +18,5 @@
   <param name="moveit_controller_manager" value="moveit_fake_controller_manager/MoveItFakeControllerManager"/>
 
   <!-- The rest of the params are specific to this plugin -->
-  <rosparam file="$(find braccio_driver)/config/fake_controllers.yaml"/>
+  <rosparam file="$(find braccio_camai)/config/fake_controllers.yaml"/>
 </launch>

@@ -8,10 +8,10 @@
   <arg name="publish_monitored_planning_scene" default="true"/>
 
   <!-- Planning Functionality -->
-  <include ns="move_group" file="$(find braccio_driver)/launch/moveit/ompl_planning_pipeline.launch" />
+  <include ns="move_group" file="$(find braccio_camai)/launch/moveit/ompl_planning_pipeline.launch" />
 
   <!-- Trajectory Execution Functionality -->
-  <include if="$(arg allow_trajectory_execution)" ns="move_group" file="$(find braccio_driver)/launch/moveit/trajectory_execution.launch">
+  <include if="$(arg allow_trajectory_execution)" ns="move_group" file="$(find braccio_camai)/launch/moveit/trajectory_execution.launch">
     <arg name="moveit_manage_controllers" value="true" />
   </include>
 

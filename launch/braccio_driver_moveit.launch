@@ -5,7 +5,7 @@
   <arg name="use_joint_state_gui" default="false"/>
 
   <!-- Load the URDF, SRDF and .yaml configuration files -->
-  <include file="$(find braccio_driver)/launch/moveit/planning_context.launch">
+  <include file="$(find braccio_camai)/launch/moveit/planning_context.launch">
     <arg name="load_robot_description" value="true"/>
   </include>
 
@@ -29,7 +29,7 @@
   </node>
 
   <!--Execute move_it -->
-  <include file="$(find braccio_driver)/launch/moveit/move_group.launch">
+  <include file="$(find braccio_camai)/launch/moveit/move_group.launch">
     <arg name="capability_group" value="$(arg capability_group)"/>
     <arg name="allow_trajectory_execution" value="true"/>
   </include>

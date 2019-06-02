@@ -6,19 +6,19 @@
   <arg name="robot_description" default="robot_description"/>
 
   <!-- Load robot description format (URDF) -->
-  <param if="$(arg load_robot_description)" name="$(arg robot_description)" textfile="$(find braccio_driver)/urdf/braccio_arm.urdf"/>
+  <param if="$(arg load_robot_description)" name="$(arg robot_description)" textfile="$(find braccio_camai)/urdf/braccio_arm.urdf"/>
 
   <!-- The semantic description -->
-  <param name="$(arg robot_description)_semantic" textfile="$(find braccio_driver)/config/braccio_visual.srdf" />
+  <param name="$(arg robot_description)_semantic" textfile="$(find braccio_camai)/config/braccio_visual.srdf" />
 
   <!-- Load updated joint limits (override information from URDF) -->
   <group ns="$(arg robot_description)_planning">
-    <rosparam command="load" file="$(find braccio_driver)/config/joint_limits.yaml"/>
+    <rosparam command="load" file="$(find braccio_camai)/config/joint_limits.yaml"/>
   </group>
 
   <!-- Load default settings for kinematics; these settings are overridden by settings in a node's namespace -->
   <group ns="$(arg robot_description)_kinematics">
-    <rosparam command="load" file="$(find braccio_driver)/config/kinematics.yaml"/>
+    <rosparam command="load" file="$(find braccio_camai)/config/kinematics.yaml"/>
   </group>
 
 </launch>

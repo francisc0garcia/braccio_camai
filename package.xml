@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>braccio_driver</name>
+  <name>braccio_camai</name>
   <version>0.0.0</version>
-  <description>The braccio_driver package</description>
+  <description>The braccio_camai package</description>
 
   <maintainer email="francisc0garcia@hotmail.com">Francisco Garcia</maintainer>
 

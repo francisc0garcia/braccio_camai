@@ -39,8 +39,8 @@ class FaceDetectorEdgeTPU:
         if len(self.model_path) > 0:
             if "pkg://" in self.model_path:
                 rp = rospkg.RosPack()
-                path = rp.get_path('braccio_driver')
-                self.model_path = self.model_path.replace("pkg://braccio_driver", path)
+                path = rp.get_path('braccio_camai')
+                self.model_path = self.model_path.replace("pkg://braccio_camai", path)
         else:
             rospy.loginfo("Invalid model path")
             return
@@ -48,8 +48,8 @@ class FaceDetectorEdgeTPU:
         if len(self.labels_file) > 0:
             if "pkg://" in self.labels_file:
                 rp = rospkg.RosPack()
-                path = rp.get_path('braccio_driver')
-                self.labels_file = self.labels_file.replace("pkg://braccio_driver", path)
+                path = rp.get_path('braccio_camai')
+                self.labels_file = self.labels_file.replace("pkg://braccio_camai", path)
 
             # loop over the class labels file
             for row in open(self.labels_file):

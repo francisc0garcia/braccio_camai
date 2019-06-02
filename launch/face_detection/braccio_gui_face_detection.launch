@@ -2,12 +2,12 @@
   <arg name="capability_group" default="GUI"/>
 
   <!-- Launch RVIZ-based GUI -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find braccio_driver)/config/face_detection.rviz">
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find braccio_camai)/config/face_detection.rviz">
     <param name="capability_group" value="$(arg capability_group)"/>
   </node>
 
   <!-- Load the URDF, SRDF and .yaml configuration files -->
-  <include file="$(find braccio_driver)/launch/moveit/planning_context.launch">
+  <include file="$(find braccio_camai)/launch/moveit/planning_context.launch">
     <arg name="load_robot_description" value="true"/>
   </include>
 

@@ -24,11 +24,11 @@
   </node>
 
   <!-- face detection module -->
-  <node name="face_detection" pkg="braccio_driver" type="face_detection_edge_tpu.py" clear_params="true">
+  <node name="face_detection" pkg="braccio_camai" type="face_detection_edge_tpu.py" clear_params="true">
     <param name="capability_group" value="$(arg capability_group)"/>
     <param name="input_image_compressed" value="/pi3a/image/compressed" />
-    <param name="model_path" value="$(find braccio_driver)/tensorflow_models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
-    <param name="labels_file" value="$(find braccio_driver)/tensorflow_models/coco_labels.txt"/>
+    <param name="model_path" value="$(find braccio_camai)/tensorflow_models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>
+    <param name="labels_file" value="$(find braccio_camai)/tensorflow_models/coco_labels.txt"/>
     <param name="tracked_object" value="bottle"/>
     <param name="threshold" value="0.3"/>
     <param name="rotation_angle" value="-90.0"/>
@@ -49,7 +49,7 @@
   </node>
 
   <!-- Joint interface -->
-  <node name="DirectJointInterfaceAsus" pkg="braccio_driver" type="DirectJointInterface" clear_params="true">
+  <node name="DirectJointInterfaceAsus" pkg="braccio_camai" type="DirectJointInterface" clear_params="true">
     <param name="capability_group" value="$(arg capability_group)"/>
     <param name="kill_on_stop" value="100" />
     <param name="camera_radius" value="5" />
