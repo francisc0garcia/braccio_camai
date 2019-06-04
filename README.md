@@ -12,6 +12,10 @@ Demo:
 
 Open source code, tutorials, videos and plug-and-play Raspberry Pi images are available. 
 
+More information and documentation on:
+
+https://braccio_camai.readthedocs.io
+
 Questions, issues and contributions are more than welcome : )
 
 # Author
