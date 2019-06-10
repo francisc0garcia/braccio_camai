@@ -1,7 +1,9 @@
-Braccio CamAI documentation
-================================
+Braccio CamAI Project
+=====================
 
-This documentation supports the development of Braccio CamAI, a Low-cost robot arm powered by computer vision and artifitial intelligence, perfect for experimenting and DIY projects.
+Braccio CamAI is a low-cost robot arm powered by computer vision and artificial intelligence, perfect for experimenting and DIY projects.
+
+Instruccions for building and installing the project are available, as well as step-by-step tutorials for face and object detection and tracking.
 
 Source code is available on:
 
@@ -13,8 +15,10 @@ Contents:
 .. toctree::
     :maxdepth: 2
 
-    How to install the project? <installation.rst>
+    Project description <description.rst>
+    Mechanical assembly <assembly.rst>
     Electronics <electronics.rst>
+    How to install the project? <installation.rst>
     Tutorials: face detection and tracking <tutorial_face_detection.rst>
     Tutorials: face detection and tracking <tutorial_object_detection.rst>
     Tutorials: Moveit demo <tutorial_moveit.rst>
