@@ -1,11 +1,11 @@
 Electronics
 ===========
 
-The main electronic components are:
+The main electronic components are detailed below:
 
 .. image:: media/board.jpg
 
-Connection diagram of Braccio CamAI:
+The corresponding Connection diagram of Braccio CamAI:
 
 .. image:: media/braccio_camai_electronics.png
 
@@ -21,6 +21,8 @@ as well as previous version *Raspberry Pi 2*.
 
 **Important:** The RP3 might get really hot. At full operation, Braccio CamAI uses approximately 65% of all CPU power. 
 If you plan to have a long run-time operation, we suggest you to install an additional fan or cooling system.
+
+We use a standard 2 Amp - 5 Volt power adapter for powering the Raspberry Pi 3. 
 
 A ready-to-use image will be available soon, manual instruction for installing ROS and melodic on RP3 are given as follows:
 
@@ -40,8 +42,9 @@ The firmware can be directly installed using the Arduino IDE: *Tools->Manage lib
 Arduino compatible Shield
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The Braccio robot arm already includes an Arduino-shield for sending PWM commands to all servo-motors. It must be separately powered using it own power plug.
-we left intentionally unconnected the motors **M5** and **M6**, since we do not want to use the gripper + last servo motor.
+The Braccio robot arm already includes an Arduino-shield for sending PWM commands to all servo-motors. 
+It must be separately powered using its own power plug, the power adapter is already included on the Braccio kit.
+We left intentionally unconnected the motors **M5** and **M6**, since we do not want to use the gripper + last servo motor.
 
 Google Coral USB Accelerator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
