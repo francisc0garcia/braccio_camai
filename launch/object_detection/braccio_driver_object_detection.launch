@@ -23,8 +23,8 @@
     <param name="baud" value="115200" />
   </node>
 
-  <!-- face detection module -->
-  <node name="face_detection" pkg="braccio_camai" type="face_detection_edge_tpu.py" clear_params="true">
+  <!-- object detection module -->
+  <node name="object_detection" pkg="braccio_camai" type="face_detection_edge_tpu.py" clear_params="true">
     <param name="capability_group" value="$(arg capability_group)"/>
     <param name="input_image_compressed" value="/pi3a/image/compressed" />
     <param name="model_path" value="$(find braccio_camai)/tensorflow_models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite"/>

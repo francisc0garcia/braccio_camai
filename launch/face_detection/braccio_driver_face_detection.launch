@@ -47,7 +47,7 @@
   </node>
 
   <!-- Joint interface -->
-  <node name="DirectJointInterfaceAsus" pkg="braccio_camai" type="DirectJointInterface" clear_params="true">
+  <node name="DirectJointInterfaceBraccio" pkg="braccio_camai" type="DirectJointInterface" clear_params="true">
     <param name="capability_group" value="$(arg capability_group)"/>
     <param name="kill_on_stop" value="100" />
     <param name="camera_radius" value="5" />
